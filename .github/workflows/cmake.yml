@@ -41,7 +41,6 @@ jobs:
         fi
         cmake -DENABLE_QT5=OFF -DCMAKE_CXX_FLAGS="-Werror -Wno-deprecated-declarations" -B ${{github.workspace}}/build -G Ninja -DFONT_CONFIGURATION=generic -DENABLE_GPGME=OFF -DBUILD_SHARED_LIBS=OFF -DTESTDATADIR=${{github.workspace}}/testfiles
 
-
     - name: Build
       working-directory: ${{github.workspace}}/build
       run: ninja
@@ -49,7 +48,13 @@ jobs:
     - name: Test
       working-directory: ${{github.workspace}}/build
       run: ctest --output-on-failure
-      
+
+    - name: Upload Poppler build
+      uses: actions/upload-artifact@v4
+      with:
+        name: poppler-${{ matrix.os }}
+        path: ${{ github.workspace }}/build/      
+        
   build_freebsd:
     runs-on: ubuntu-latest
     name: FreeBSD build
